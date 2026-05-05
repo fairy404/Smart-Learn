@@ -1,6 +1,8 @@
 import { createClient } from "@supabase/supabase-js";
 
-const supabaseUrl = "https://ljqrgoaeulvryebmyuvd.supabase.co";
-const supabaseKey = "sb_publishable_vptHc_Ct_DO1QoKs8Q_wXw_P25brMFP";
+// استخدام Environment Variables
+const supabaseUrl = process.env.REACT_APP_SUPABASE_URL;
+const supabaseKey = process.env.REACT_APP_SUPABASE_ANON_KEY;
 
+// إنشاء الاتصال
 export const supabase = createClient(supabaseUrl, supabaseKey);
