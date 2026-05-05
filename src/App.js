@@ -40,7 +40,7 @@ function Navbar() {
         {user ? (
           <>
             <span>{user.email}</span>
-            <button type="button" onClick={logout}>Logout</button>
+            <button onClick={logout}>Logout</button>
           </>
         ) : (
           <Link to="/login">Login</Link>
@@ -55,9 +55,7 @@ function Login() {
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) {
-        window.location.href = "/";
-      }
+      if (data.session) window.location.href = "/";
     });
   }, []);
 
@@ -67,15 +65,13 @@ function Login() {
       email.indexOf("@") === 0 ||
       email.indexOf("@") === email.length - 1
     ) {
-      alert("الإيميل خطأ تأكد أنه صحيح");
+      alert("الإيميل خطأ");
       return;
     }
 
     await supabase.auth.signInWithOtp({
-      email: email,
-      options: {
-        emailRedirectTo: "https://YOUR-VERCEL-URL.vercel.app"
-      }
+      email,
+      options: { emailRedirectTo: "http://localhost:3000" }
     });
 
     alert("تحقق من الإيميل");
@@ -84,26 +80,17 @@ function Login() {
   return (
     <div className="container">
       <h1>Login</h1>
-
-      <input
-        type="email"
-        placeholder="Email"
-        onChange={(e) => setEmail(e.target.value)}
-      />
-
+      <input type="email" onChange={(e) => setEmail(e.target.value)} />
       <br /><br />
-
-      <button type="button" onClick={handleLogin}>Send</button>
+      <button onClick={handleLogin}>Send</button>
     </div>
   );
-}
-
-function Home() {
+} function Home() {
   const register = async (id) => {
     const { data } = await supabase.auth.getUser();
 
     if (!data.user) {
-      alert("يجب تسجيل الدخول أولاً");
+      alert("سجل دخول أول");
       return;
     }
 
@@ -111,11 +98,8 @@ function Home() {
       { activity_id: id, user_id: data.user.id }
     ]);
 
-    if (error) {
-      alert("خطأ");
-    } else {
-      alert("تم التسجيل");
-    }
+    if (error) alert("خطأ");
+    else alert("تم التسجيل");
   };
 
   return (
@@ -123,16 +107,15 @@ function Home() {
       <h1>Activities</h1>
 
       {activities.map((a) => (
-        <div className="card" key={a.id}>
-          <img src={a.img} className="card-img" />
-
+        <div key={a.id} className="card">
+          <img src={a.img} className="card-img" alt="image" />
           <h3>{a.title}</h3>
           <p>{a.desc}</p>
-          <p>📅 {a.date}</p>
+          <p>{a.date}</p>
 
-          <button type="button" onClick={() => register(a.id)}>تسجيل</button>
-
+          <button onClick={() => register(a.id)}>تسجيل</button>
           <br /><br />
+
           <Link to={`/activity/${a.id}`}>Details</Link>
         </div>
       ))}
@@ -148,14 +131,13 @@ function ActivityDetails() {
 
   return (
     <div className="container">
-      <img src={activity.img} className="card-img" />
+      <img src={activity.img} className="card-img" alt="Activity" />
       <h1>{activity.title}</h1>
       <p>{activity.full}</p>
-      <p>📅 {activity.date}</p>
+      <p>{activity.date}</p>
     </div>
   );
 }
-
 function MyActivities() {
   const [data, setData] = useState([]);
 
@@ -179,15 +161,14 @@ function MyActivities() {
     <div className="container">
       <h1>My Activities</h1>
 
-      {data.map((item, index) => {
-        const activity = activities.find(a => a.id === item.activity_id);
+      {data.map((item, i) => {
+        const a = activities.find(x => x.id === item.activity_id);
 
         return (
-          <div className="card" key={index}>
-            <img src={activity?.img} className="card-img" />
-            <h3>{activity?.title}</h3>
-            <p>{activity?.desc}</p>
-            <p>📅 {activity?.date}</p>
+          <div key={i} className="card">
+            <img src={a?.img} className="card-img" alt={a?.title} />
+            <h3>{a?.title}</h3>
+            <p>{a?.desc}</p>
           </div>
         );
       })}
@@ -198,11 +179,8 @@ function MyActivities() {
 function About() {
   return (
     <div className="container">
-      <h1>About Smart Learn</h1>
-
-      <div className="card">
-        <p>Smart Learn منصة تعليمية تساعد الطلاب على تطوير مهاراتهم</p>
-      </div>
+      <h1>About</h1>
+      <p>Smart Learn منصة تعليمية</p>
     </div>
   );
 }
@@ -213,8 +191,8 @@ function Courses() {
       <h1>Courses</h1>
 
       {activities.map((a) => (
-        <div className="card" key={a.id}>
-          <img src={a.img} className="card-img" />
+        <div key={a.id} className="card">
+          <img src={a.img} className="card-img" alt={a.title} />
           <h3>{a.title}</h3>
           <p>{a.desc}</p>
         </div>
