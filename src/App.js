@@ -108,7 +108,7 @@ function Login() {
 
       {activities.map((a) => (
         <div key={a.id} className="card">
-          <img src={a.img} className="card-img" alt="image" />
+          <img src={a.img} className="card-img" alt={a.title} />
           <h3>{a.title}</h3>
           <p>{a.desc}</p>
           <p>{a.date}</p>
